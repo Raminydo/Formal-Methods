@@ -1,0 +1,31 @@
+MODULE main
+VAR
+    method : {mechanical, digital, voice};
+    state : boolean;
+    error : boolean;
+
+ASSIGN
+    init(state) := FALSE;
+    init(error) := FALSE;
+
+    next(state) := case
+        method = mechanical : !state;
+        method = digital : {state, !state}; -- nondeterministic toggle due to sensitivity
+        method = voice : {state, !state};
+        TRUE : state;
+    esac;
+
+    next(error) := case
+        method = digital : {TRUE, FALSE}; -- nondeterministic error
+        method = voice : {TRUE, FALSE};
+        TRUE: FALSE;
+    esac;
+
+SPEC
+    AG (method = mechanical -> AF state = TRUE)
+
+SPEC
+    AG (method = digital -> A [state = FALSE U error = TRUE])
+
+SPEC
+    AG (method = voice -> A [state = FALSE U error = TRUE])
