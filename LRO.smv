@@ -1,0 +1,19 @@
+MODULE main
+VAR
+  indicator: {right, left, off};
+
+DEFINE
+  rightOn := indicator = right;
+  leftOn := indicator = left;
+
+ASSIGN
+  init(indicator) := off;
+
+  next(indicator) := case
+    indicator = off : {right, left};
+    TRUE : off;
+  esac;
+
+LTLSPEC
+  G !(rightOn & leftOn)
+
