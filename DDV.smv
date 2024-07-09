@@ -1,0 +1,24 @@
+MODULE main
+VAR
+  method: {mechanical, digital, voice};
+  accidental: boolean;
+  misunderstood: boolean;
+
+ASSIGN
+  init(accidental) := FALSE;
+  init(misunderstood) := FALSE;
+
+  next(accidental) := case
+    method = mechanical : {TRUE, FALSE};
+    method = digital : {TRUE, FALSE};
+    method = voice : misunderstood;
+    TRUE : FALSE;
+  esac;
+
+  next(misunderstood) := case
+    method = voice : {TRUE, FALSE};
+    TRUE : FALSE;
+  esac;
+
+SPEC
+  AG !accidental
